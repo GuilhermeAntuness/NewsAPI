@@ -2,10 +2,12 @@ import requests
 import os
 import json
 from dotenv import load_dotenv
+from collections import Counter
 
 load_dotenv()
 
-temas_procurados = {}
+temas_procurados = []
+
 def get_api(tema):
     """
         Faz uma requisição à API da NewsAPI para buscar notícias com base em um tema.
@@ -45,7 +47,6 @@ def get_api(tema):
 
     except requests.exceptions.RequestException as e:
         return 'Erro!!', e
-
     
 def menu():
     """
@@ -122,7 +123,9 @@ def solicitar_noticia():
             
     # Incrementa a contagem de vezes que o tema foi procurado no dicionário temas_procurados.
     # Usa .get(tema, 0) para retornar 0 se o tema não existir, evitando erros, e adiciona 1 ao contador.
-    temas_procurados[tema] = temas_procurados.get(tema, 0) + 1
+    #temas_procurados[tema] = temas_procurados.get(tema, 0) + 1
+    
+    temas_procurados.append(tema.upper())
 
     for i in noticia['articles'][:quantidade_noticia]:
             print()
@@ -146,10 +149,11 @@ def mostrar_historico():
     if not temas_procurados:
         print("Nenhum tema foi procurado ainda.")
     else:
-        lista_temas = [{"tema": tema, "contagem": contagem} for tema, contagem in temas_procurados.items()]
-        print("Temas procurados (como lista):")
-        for item in lista_temas:
-            print(f"'{item['tema']}': {item['contagem']} vez(es)")
+        tema = Counter(temas_procurados)
+        print('Temas procurados'.center(40,'-'))
+        for k, v in tema.items():
+            print(f"{k} : {v} vez(es)")
+
 
 def linha():
     """
@@ -158,6 +162,14 @@ def linha():
     print('=-'*20)
 
 
+def test():
+        
+        temas_procurados[tema] = temas_procurados.get(tema, 0) + 1
+
+        lista_temas = [{"tema": tema, "contagem": contagem} for tema, contagem in temas_procurados.items()]
+        print("Temas procurados (como lista):")
+        for item in lista_temas:
+            print(f"'{item['tema']}': {item['contagem']} vez(es)")
 
 
 
